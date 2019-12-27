@@ -23,7 +23,7 @@ and identically.**
 Clone the source code with : 
 
 ```
-clone http://git/blah
+clone https://github.com/elkorchi/GeometricShapesGenerator.git
 ```
 
 Install project requirements specified in `requirements.txt` : 
