@@ -15,7 +15,7 @@ def cli():
     '--destination', required=True, help='Storage path'
 )
 @click.option(
-    '--show-animation', default=True,
+    '--show-animation', default=False,
     help="Shows turtle animation while generating, "
          "note if this option is activated it slows the generation process"
 )
