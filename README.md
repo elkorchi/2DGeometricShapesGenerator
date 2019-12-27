@@ -1,4 +1,4 @@
-#Geometric shapes generator
+# Geometric shapes generator
 
 A generator of geometric shape data set, this data set is composed of a set of 
 images stored in `jpg` files. Each image contains one of the following shapes : 
