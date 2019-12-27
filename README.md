@@ -29,13 +29,13 @@ clone http://git/blah
 Install project requirements specified in `requirements.txt` : 
 
 ```
-   pip install - r requirements.txt 
+pip install - r requirements.txt 
 ```
  
  Run the data set generation with :
  
 ```
-    python shape_generator generate-shapes --size=1000 --destination=/storage/directory
+python shape_generator generate-shapes --size=1000 --destination=/storage/directory
 ```
 
 The generation command may accept the following option : 
