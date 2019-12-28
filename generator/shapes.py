@@ -272,7 +272,7 @@ class Pentagon(AbstractShape):
         for vertice in range(5):
             coordinates.append(
                 (
-                    self.radius * np.cos( * np.pi * vertice / 5) + self.x,
+                    self.radius * np.cos(2 * np.pi * vertice / 5) + self.x,
                     self.radius * np.sin(2 * np.pi * vertice / 5) + self.y
                 )
             )
