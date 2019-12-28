@@ -19,7 +19,7 @@ class AbstractShape(ABC):
     def __init__(self, destination, painter):
         self.painter = painter
         self.destination = destination
-        self.drawing_width = None
+        self.radius = None
         self.x = None
         self.y = None
 
@@ -55,7 +55,7 @@ class AbstractShape(ABC):
 
             - random background color
             - random filling color
-            - random width
+            - random perimeter (deduced from the circumscribed circle's radius)
             - random rotation angle
             - center of the circumscribed circle of a shape
 
@@ -68,19 +68,17 @@ class AbstractShape(ABC):
         self.painter.fillcolor(color[0], color[1], color[2])
         self.painter.color(color[0], color[1], color[2])
         self.painter.penup()
-        self.drawing_width = np.random.randint(
-            20, 100
-        )
+        self.radius = np.random.randint(10, 50)
         self.rotation = np.deg2rad(np.random.randint(-180, 180))
 
         self.x, self.y = (
             np.random.randint(
-                -80 + self.drawing_width / 2,
-                80 - self.drawing_width / 2
+                -80 + self.radius,
+                80 - self.radius
             ),
             np.random.randint(
-                -80 + self.drawing_width / 2,
-                80 - self.drawing_width / 2
+                -80 + self.radius,
+                80 - self.radius
             )
         )
 
@@ -173,13 +171,11 @@ class Triangle(AbstractShape):
     def get_shape_coordinates(self):
         coordinates = [
             (
-                self.x, self.y + self.drawing_width / 2,
+                self.x, self.y + self.radius,
             ), (
-                self.x - self.drawing_width / 2,
-                self.y - self.drawing_width / 4,
+                self.x - self.radius, self.y - self.radius,
             ), (
-                self.x + self.drawing_width / 2,
-                self.y - self.drawing_width / 4,
+                self.x + self.radius, self.y - self.radius,
             )
         ]
 
@@ -192,13 +188,13 @@ class Square(AbstractShape):
 
         return [
             (
-                self.x - self.drawing_width / 2, self.y - self.drawing_width / 2,
+                self.x - self.radius, self.y - self.radius,
             ), (
-                self.x + self.drawing_width / 2, self.y - self.drawing_width / 2,
+                self.x + self.radius, self.y - self.radius,
             ), (
-                self.x + self.drawing_width / 2, self.y + self.drawing_width / 2,
+                self.x + self.radius, self.y + self.radius,
             ), (
-                self.x - self.drawing_width / 2, self.y + self.drawing_width / 2,
+                self.x - self.radius, self.y + self.radius,
             )
         ]
 
@@ -213,10 +209,8 @@ class Star(AbstractShape):
         for vertice in range(5):
             pentagon_coordinates.append(
                 (
-                    (self.drawing_width / 2) * np.cos(
-                        2 * np.pi * vertice / 5) + self.x,
-                    (self.drawing_width / 2) * np.sin(
-                        2 * np.pi * vertice / 5) + self.y
+                    self.radius * np.cos(2 * np.pi * vertice / 5) + self.x,
+                    self.radius * np.sin(2 * np.pi * vertice / 5) + self.y
                 )
             )
 
@@ -242,8 +236,8 @@ class Hexagon(AbstractShape):
         for vertice in range(6):
             coordinates.append(
                 (
-                    (self.drawing_width / 2) * np.cos(2 * np.pi * vertice / 6) + self.x,
-                    (self.drawing_width / 2) * np.sin(2 * np.pi * vertice / 6) + self.y
+                    self.radius * np.cos(2 * np.pi * vertice / 6) + self.x,
+                    self.radius * np.sin(2 * np.pi * vertice / 6) + self.y
                 )
             )
         return coordinates
@@ -256,15 +250,12 @@ class Circle(AbstractShape):
 
     def draw(self):
 
-        self.painter.setposition(
-            self.x,
-            self.y - self.drawing_width / 2
-        )
+        self.painter.setposition(self.x, self.y - self.radius)
 
         self.painter.pendown()
         self.painter.begin_fill()
         self.painter.ht()
-        self.painter.circle(self.drawing_width / 2)
+        self.painter.circle(self.radius)
         self.painter.end_fill()
 
     def get_shape_coordinates(self):
@@ -281,10 +272,8 @@ class Pentagon(AbstractShape):
         for vertice in range(5):
             coordinates.append(
                 (
-                    (self.drawing_width / 2) * np.cos(
-                        2 * np.pi * vertice / 5) + self.x,
-                    (self.drawing_width / 2) * np.sin(
-                        2 * np.pi * vertice / 5) + self.y
+                    self.radius * np.cos( * np.pi * vertice / 5) + self.x,
+                    self.radius * np.sin(2 * np.pi * vertice / 5) + self.y
                 )
             )
         return coordinates
@@ -300,10 +289,8 @@ class Heptagon(AbstractShape):
         for vertice in range(7):
             coordinates.append(
                 (
-                    (self.drawing_width / 2) * np.cos(
-                        2 * np.pi * vertice / 7) + self.x,
-                    (self.drawing_width / 2) * np.sin(
-                        2 * np.pi * vertice / 7) + self.y
+                    self.radius * np.cos(2 * np.pi * vertice / 7) + self.x,
+                    self.radius * np.sin(2 * np.pi * vertice / 7) + self.y
                 )
             )
         return coordinates
@@ -319,10 +306,8 @@ class Octagon(AbstractShape):
         for vertice in range(8):
             coordinates.append(
                 (
-                    (self.drawing_width / 2) * np.cos(
-                        2 * np.pi * vertice / 8) + self.x,
-                    (self.drawing_width / 2) * np.sin(
-                        2 * np.pi * vertice / 8) + self.y
+                    self.radius * np.cos(2 * np.pi * vertice / 8) + self.x,
+                    self.radius * np.sin(2 * np.pi * vertice / 8) + self.y
                 )
             )
         return coordinates
