@@ -10,7 +10,7 @@ from os import path
 class AbstractShape(ABC):
     r"""
         Synthetic geometric shape generator, each shape is generated in a
-        150x150 image then saved in a 'jpg' file.
+        200x200 image then saved in a 'png' file.
 
         Args:
             destination: storage folder path
@@ -38,13 +38,14 @@ class AbstractShape(ABC):
         self.painter.fillcolor(color[0], color[1], color[2])
         self.painter.color(color[0], color[1], color[2])
         self.painter.penup()
-        self.painter.setposition(-100, 100)
+        self.painter.setposition(-160, 160)
         self.painter.pendown()
         self.painter.begin_fill()
 
-        for _ in range(4):
-            self.painter.forward(400)
-            self.painter.right(90)
+        self.painter.goto(160, 160)
+        self.painter.goto(160, -160)
+        self.painter.goto(-160, -160)
+        self.painter.goto(-160, 160)
 
         self.painter.end_fill()
         self.painter.penup()
@@ -84,21 +85,19 @@ class AbstractShape(ABC):
 
     def __save_drawing(self):
         """
-            Save the current drawing to a JPG image, the generated image is then
+            Save the current drawing to a PNG image, the generated image is then
             saved in the parametrized path.
 
             The name of the save image is as follows :
-                [Type of shape]_[UUID].jpg
+                [Type of shape]_[UUID].png
 
         :return: None
         """
-        ps = self.painter.getscreen().getcanvas().postscript(
-            colormode='color'
-        )
+        ps = self.painter.getscreen().getcanvas().postscript(colormode='color')
         im = Image.open(io.BytesIO(ps.encode('utf-8')))
         im.save(path.join(
             self.destination,
-            self.__class__.__name__ + "_" + str(uuid.uuid1()) + '.jpg'
+            self.__class__.__name__ + "_" + str(uuid.uuid1()) + '.png'
         ))
 
     def generate(self):

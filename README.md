@@ -1,12 +1,12 @@
 # Geometric shapes generator
 
 A generator of geometric shape data set, this data set is composed of a set of 
-images stored in `jpg` files. Each image contains one of the following shapes : 
+images stored in `png` files. Each image contains one of the following shapes : 
 Square, Traingle, Circle, Star, Polygon, Heptagone, Hexagone and Octagone.
 
 Each image is generated within the following parameters : 
 
-- A fixed size of 150x150 pixel
+- A fixed size of 200x200 pixel
 
 - A random background colour
 - A random filling colour of each shape

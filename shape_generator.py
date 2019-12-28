@@ -25,7 +25,7 @@ def generate_shapes(size, destination, show_animation):
         shapes (Square, Triangle, Circle, Star, Polygon, Pentagon, Heptagon,
         Hexagon).
 
-        Each shape is drawn randomly on a 150x150 image. Each image is drawn
+        Each shape is drawn randomly on a 200x200 image. Each image is drawn
         with the following parameters which their value is selected randomly
         and independently :
 

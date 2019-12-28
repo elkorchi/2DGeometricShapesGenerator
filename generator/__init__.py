@@ -7,11 +7,12 @@ class GeometricShapes:
 
     def __init__(self, destination, size, animation=False):
         turtle.colormode(255)
-        turtle.setup(width=200, height=200)
+
+        # the canvas substract a pixel from the height
+        turtle.setup(width=200, height=201)
         turtle.screensize(160, 160)
         turtle.hideturtle()
         turtle.tracer(animation)
-        turtle.speed("slowest")
 
         container = turtle.Turtle()
 
