@@ -2,7 +2,7 @@
 
 A generator of geometric shape data set, this data set is composed of a set of 
 images stored in `png` files. Each image contains one of the following shapes : 
-Square, Traingle, Circle, Star, Polygon, Heptagone, Hexagone and Octagone.
+Square, Traingle, Circle, Star, Polygon, Heptagone, Hexagone, Octagone and Nonagon.
 
 Each image is generated within the following parameters : 
 
