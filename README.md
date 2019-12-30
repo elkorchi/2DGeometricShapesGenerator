@@ -1,6 +1,6 @@
-# Geometric shapes generator
+# 2D Geometric shapes generator
 
-A generator of geometric shape data set, this data set is composed of a set of 
+A generator of 2D geometric shape data set, this data set is composed of a set of 
 images stored in `png` files. Each image contains one of the following shapes : 
 Square, Traingle, Circle, Star, Polygon, Heptagone, Hexagone, Octagone and Nonagon.
 
@@ -23,7 +23,7 @@ and identically.**
 Clone the source code with : 
 
 ```
-clone https://github.com/elkorchi/GeometricShapesGenerator.git
+clone https://github.com/elkorchi/2DGeometricShapesGenerator.git
 ```
 
 Install project requirements specified in `requirements.txt` : 
