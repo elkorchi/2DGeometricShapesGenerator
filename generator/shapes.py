@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 import numpy as np
 import io
@@ -9,12 +9,12 @@ from os import path
 
 class AbstractShape(ABC):
     r"""
-        Synthetic geometric shape generator, each shape is generated in a
-        200x200 image then saved in a 'png' file.
+           Synthetic geometric shape generator, each shape is generated in a
+           200x200 image then saved in a 'png' file.
 
-        Args:
-            destination: storage folder path
-    """
+           Args:
+               destination: storage folder path
+       """
 
     def __init__(self, destination, painter):
         self.painter = painter
@@ -69,7 +69,7 @@ class AbstractShape(ABC):
         self.painter.fillcolor(color[0], color[1], color[2])
         self.painter.color(color[0], color[1], color[2])
         self.painter.penup()
-        self.radius = np.random.randint(10, 50)
+        self.radius = np.random.randint(10, 75)
         self.rotation = np.deg2rad(np.random.randint(-180, 180))
 
         self.x, self.y = (
@@ -93,12 +93,14 @@ class AbstractShape(ABC):
 
         :return: None
         """
-        ps = self.painter.getscreen().getcanvas().postscript(colormode='color')
+        ps = self.painter.getscreen().getcanvas().postscript(
+            colormode='color', pageheight=199, pagewidth=199
+        )
         im = Image.open(io.BytesIO(ps.encode('utf-8')))
         im.save(path.join(
             self.destination,
             self.__class__.__name__ + "_" + str(uuid.uuid1()) + '.png'
-        ))
+        ), quality=100, format='png')
 
     def generate(self):
         """
@@ -149,6 +151,7 @@ class AbstractShape(ABC):
 
         self.painter.end_fill()
 
+    @abstractmethod
     def get_shape_coordinates(self):
         """
             Get the coordinate of each points constructing a shape with no
@@ -162,90 +165,68 @@ class AbstractShape(ABC):
         raise NotImplementedError()
 
 
-class Triangle(AbstractShape):
+class AbstractPolygonShape(AbstractShape, ABC):
 
-    min_width = 20
-    max_width = 80
-
-    def get_shape_coordinates(self):
-        coordinates = [
-            (
-                self.x, self.y + self.radius,
-            ), (
-                self.x - self.radius, self.y - self.radius,
-            ), (
-                self.x + self.radius, self.y - self.radius,
-            )
-        ]
-
-        return coordinates
-
-
-class Square(AbstractShape):
+    number_of_vertices = None
 
     def get_shape_coordinates(self):
 
-        return [
-            (
-                self.x - self.radius, self.y - self.radius,
-            ), (
-                self.x + self.radius, self.y - self.radius,
-            ), (
-                self.x + self.radius, self.y + self.radius,
-            ), (
-                self.x - self.radius, self.y + self.radius,
-            )
-        ]
-
-
-class Star(AbstractShape):
-
-    min_width = 20
-    max_width = 80
-
-    def get_shape_coordinates(self):
-        pentagon_coordinates = []
-        for vertice in range(5):
-            pentagon_coordinates.append(
-                (
-                    self.radius * np.cos(2 * np.pi * vertice / 5) + self.x,
-                    self.radius * np.sin(2 * np.pi * vertice / 5) + self.y
-                )
+        if not self.number_of_vertices:
+            raise NotImplementedError(
+                "The number of vertices must be specified in sub classes."
             )
 
-        coordinates = [
-            pentagon_coordinates[3],
-            pentagon_coordinates[1],
-            pentagon_coordinates[4],
-            pentagon_coordinates[2],
-            pentagon_coordinates[0],
-
-        ]
-
-        return coordinates
-
-
-class Hexagon(AbstractShape):
-
-    min_width = 20
-    max_width = 40
-
-    def get_shape_coordinates(self):
         coordinates = []
-        for vertice in range(6):
+        for vertex in range(self.number_of_vertices):
             coordinates.append(
                 (
-                    self.radius * np.cos(2 * np.pi * vertice / 6) + self.x,
-                    self.radius * np.sin(2 * np.pi * vertice / 6) + self.y
+                    self.radius * np.cos(
+                        2 * np.pi * vertex / self.number_of_vertices
+                    ) + self.x,
+                    self.radius * np.sin(
+                        2 * np.pi * vertex / self.number_of_vertices
+                    ) + self.y
                 )
             )
         return coordinates
+
+
+class Triangle(AbstractPolygonShape):
+
+    number_of_vertices = 3
+
+
+class Square(AbstractPolygonShape):
+
+    number_of_vertices = 4
+
+
+class Pentagon(AbstractPolygonShape):
+
+    number_of_vertices = 5
+
+
+class Hexagon(AbstractPolygonShape):
+
+    number_of_vertices = 6
+
+
+class Heptagon(AbstractPolygonShape):
+
+    number_of_vertices = 7
+
+
+class Octagon(AbstractPolygonShape):
+
+    number_of_vertices = 8
+
+
+class Nonagon(AbstractPolygonShape):
+
+    number_of_vertices = 9
 
 
 class Circle(AbstractShape):
-
-    min_width = 10
-    max_width = 40
 
     def draw(self):
 
@@ -261,52 +242,25 @@ class Circle(AbstractShape):
         pass
 
 
-class Pentagon(AbstractShape):
-
-    min_width = 20
-    max_width = 40
+class Star(AbstractPolygonShape):
 
     def get_shape_coordinates(self):
-        coordinates = []
-        for vertice in range(5):
-            coordinates.append(
+        pentagon_coordinates = []
+        for vertex in range(5):
+            pentagon_coordinates.append(
                 (
-                    self.radius * np.cos(2 * np.pi * vertice / 5) + self.x,
-                    self.radius * np.sin(2 * np.pi * vertice / 5) + self.y
+                    self.radius * np.cos(2 * np.pi * vertex / 5) + self.x,
+                    self.radius * np.sin(2 * np.pi * vertex / 5) + self.y
                 )
             )
-        return coordinates
 
+        coordinates = [
+            pentagon_coordinates[3],
+            pentagon_coordinates[1],
+            pentagon_coordinates[4],
+            pentagon_coordinates[2],
+            pentagon_coordinates[0],
 
-class Heptagon(AbstractShape):
+        ]
 
-    min_width = 20
-    max_width = 40
-
-    def get_shape_coordinates(self):
-        coordinates = []
-        for vertice in range(7):
-            coordinates.append(
-                (
-                    self.radius * np.cos(2 * np.pi * vertice / 7) + self.x,
-                    self.radius * np.sin(2 * np.pi * vertice / 7) + self.y
-                )
-            )
-        return coordinates
-
-
-class Octagon(AbstractShape):
-
-    min_width = 20
-    max_width = 40
-
-    def get_shape_coordinates(self):
-        coordinates = []
-        for vertice in range(8):
-            coordinates.append(
-                (
-                    self.radius * np.cos(2 * np.pi * vertice / 8) + self.x,
-                    self.radius * np.sin(2 * np.pi * vertice / 8) + self.y
-                )
-            )
         return coordinates

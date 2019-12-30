@@ -5,12 +5,16 @@ from generator.shapes import *
 
 class GeometricShapes:
 
+    __GENERATORS__ = [
+        Triangle, Circle, Heptagon, Octagon, Hexagon, Square, Star,
+        Nonagon, Pentagon
+    ]
+
     def __init__(self, destination, size, animation=False):
         turtle.colormode(255)
 
         # the canvas substract a pixel from the height
-        turtle.setup(width=200, height=201)
-        turtle.screensize(160, 160)
+        turtle.setup(width=200, height=200)
         turtle.hideturtle()
         turtle.tracer(animation)
 
@@ -18,9 +22,9 @@ class GeometricShapes:
 
         self.__size__ = size
         self.__shapes = [
-            shape(
+            generator(
                 destination, container
-            ) for shape in AbstractShape.__subclasses__()
+            ) for generator in self.__GENERATORS__
         ]
 
     def generate(self):
