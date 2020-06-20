@@ -126,6 +126,7 @@ class AbstractShape(ABC):
 
         :return: None
         """
+        self.painter.penup()
         shape_coordinates = self.get_shape_coordinates()
         r_coordinates = []
 
@@ -140,16 +141,28 @@ class AbstractShape(ABC):
                 )
             )
 
-        self.painter.goto(r_coordinates[-1])
+        if self.__class__.__name__ == 'Star':
+            self.painter.goto(r_coordinates[4])
+        else:
+            self.painter.goto(r_coordinates[-1])
 
         self.painter.pendown()
         self.painter.begin_fill()
-        self.painter.hideturtle()
 
-        for item in r_coordinates:
-            self.painter.goto(item)
+        if self.__class__.__name__ == 'Star':
+            for item in r_coordinates[:-1]:
+                self.painter.goto(item)
+            self.painter.end_fill()
+            self.painter.begin_fill()
+            self.painter.goto(r_coordinates[-1])
+            self.painter.goto(r_coordinates[-3])
+            self.painter.goto(r_coordinates[-2])
+        else:
+            for item in r_coordinates:
+                self.painter.goto(item)
 
         self.painter.end_fill()
+        self.painter.hideturtle()
 
     @abstractmethod
     def get_shape_coordinates(self):
@@ -246,7 +259,7 @@ class Star(AbstractPolygonShape):
 
     def get_shape_coordinates(self):
         pentagon_coordinates = []
-        for vertex in range(5):
+        for vertex in range(6):
             pentagon_coordinates.append(
                 (
                     self.radius * np.cos(2 * np.pi * vertex / 5) + self.x,
@@ -254,13 +267,29 @@ class Star(AbstractPolygonShape):
                 )
             )
 
-        coordinates = [
-            pentagon_coordinates[3],
-            pentagon_coordinates[1],
-            pentagon_coordinates[4],
-            pentagon_coordinates[2],
-            pentagon_coordinates[0],
+        pentagon_coordinates[5] = self.get_point(pentagon_coordinates[0], pentagon_coordinates[2], pentagon_coordinates[1], pentagon_coordinates[3])
 
+        coordinates = [
+            pentagon_coordinates[2],
+            pentagon_coordinates[4],
+            pentagon_coordinates[1],
+            pentagon_coordinates[3],
+            pentagon_coordinates[0],
+            pentagon_coordinates[5]
         ]
 
         return coordinates
+
+    def line_params(self, point_1, point_2):
+        x_1, y_1 = point_1[0], point_1[1]
+        x_2, y_2 = point_2[0], point_2[1]
+        k = (y_1 - y_2) / (x_1 - x_2)
+        b = y_1 - k * x_1
+        return k, b
+
+    def get_point(self, point_0, point_2, point_1, point_3):
+        k_1, b_1 = self.line_params(point_0, point_2)
+        k_2, b_2 = self.line_params(point_1, point_3)
+        x = (b_2 - b_1) / (k_1 - k_2)
+        y = k_1 * x + b_1
+        return (x, y)
