@@ -141,25 +141,16 @@ class AbstractShape(ABC):
                 )
             )
 
-        if self.__class__.__name__ == 'Star':
-            self.painter.goto(r_coordinates[4])
-        else:
-            self.painter.goto(r_coordinates[-1])
+        self.painter.goto(r_coordinates[-1])
 
         self.painter.pendown()
         self.painter.begin_fill()
 
-        if self.__class__.__name__ == 'Star':
-            for item in r_coordinates[:-1]:
-                self.painter.goto(item)
-            self.painter.end_fill()
-            self.painter.begin_fill()
-            self.painter.goto(r_coordinates[-1])
-            self.painter.goto(r_coordinates[-3])
-            self.painter.goto(r_coordinates[-2])
-        else:
-            for item in r_coordinates:
-                self.painter.goto(item)
+        for idx, item in enumerate(r_coordinates):
+            self.painter.goto(item)
+            if self.should_break and self.should_break == idx:
+                self.painter.end_fill()
+                self.painter.begin_fill()
 
         self.painter.end_fill()
         self.painter.hideturtle()
@@ -181,6 +172,7 @@ class AbstractShape(ABC):
 class AbstractPolygonShape(AbstractShape, ABC):
 
     number_of_vertices = None
+    should_break = None
 
     def get_shape_coordinates(self):
 
@@ -257,6 +249,8 @@ class Circle(AbstractShape):
 
 class Star(AbstractPolygonShape):
 
+    should_break = 4
+
     def get_shape_coordinates(self):
         pentagon_coordinates = []
         for vertex in range(6):
@@ -267,7 +261,10 @@ class Star(AbstractPolygonShape):
                 )
             )
 
-        pentagon_coordinates[5] = self.get_point(pentagon_coordinates[0], pentagon_coordinates[2], pentagon_coordinates[1], pentagon_coordinates[3])
+        pentagon_coordinates[5] = self.get_point(
+            pentagon_coordinates[0], pentagon_coordinates[2],
+            pentagon_coordinates[1], pentagon_coordinates[3]
+        )
 
         coordinates = [
             pentagon_coordinates[2],
@@ -275,7 +272,9 @@ class Star(AbstractPolygonShape):
             pentagon_coordinates[1],
             pentagon_coordinates[3],
             pentagon_coordinates[0],
-            pentagon_coordinates[5]
+            pentagon_coordinates[5],
+            pentagon_coordinates[3],
+            pentagon_coordinates[0],
         ]
 
         return coordinates
